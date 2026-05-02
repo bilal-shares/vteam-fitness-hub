@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - V Team Fitness Hub</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="dark-theme">
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-compact">
+                    <span class="logo-text">VT</span>
+                </div>
+                <button class="menu-toggle" id="menuToggle">☰</button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+                <a href="members.html" class="nav-link" data-page="members">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Members</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="theme-toggle" id="themeToggle">🌙</button>
+                <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <h1>Dashboard</h1>
+                <div class="user-info">
+                    <span id="userEmail">Admin</span>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <h2>Member Analytics</h2>
+                
+                <!-- Stats Cards Grid -->
+                <div class="stats-grid">
+                    <!-- Total Members Card -->
+                    <div class="stat-card clickable" id="statTotal" data-filter="all">
+                        <div class="stat-icon total">👥</div>
+                        <div class="stat-info">
+                            <h3>Total Members</h3>
+                            <p class="stat-number" id="totalMembers">0</p>
+                        </div>
+                        <div class="stat-arrow">→</div>
+                    </div>
+
+                    <!-- Active Members Card -->
+                    <div class="stat-card clickable" id="statActive" data-filter="active">
+                        <div class="stat-icon active">✓</div>
+                        <div class="stat-info">
+                            <h3>Active Members</h3>
+                            <p class="stat-number" id="activeMembers">0</p>
+                        </div>
+                        <div class="stat-arrow">→</div>
+                    </div>
+
+                    <!-- Expiring in 10 Days Card -->
+                    <div class="stat-card clickable" id="statExpiring10" data-filter="expiring10">
+                        <div class="stat-icon warning">⚠</div>
+                        <div class="stat-info">
+                            <h3>Expiring in 10 Days</h3>
+                            <p class="stat-number" id="expiringIn10">0</p>
+                        </div>
+                        <div class="stat-arrow">→</div>
+                    </div>
+
+                    <!-- Expired in 30 Days Card -->
+                    <div class="stat-card clickable" id="statExpired30" data-filter="expired30">
+                        <div class="stat-icon danger">⛔</div>
+                        <div class="stat-info">
+                            <h3>Expired in 30 Days</h3>
+                            <p class="stat-number" id="expiredIn30">0</p>
+                        </div>
+                        <div class="stat-arrow">→</div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="action-buttons">
+                        <a href="members.html" class="btn-secondary">
+                            ➕ Add New Member
+                        </a>
+                        <a href="members.html" class="btn-secondary">
+                            👥 View All Members
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div id="recentActivityList" class="activity-list">
+                        <p class="placeholder">No recent activity</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+        import { getDatabase } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
+
+        window.firebaseConfig = {
+            apiKey: "AIzaSyBD--itijs4RziHUWMdQA3jAvZ9hgNhzBo",
+            authDomain: "vteam-fitness.firebaseapp.com",
+            databaseURL: "https://vteam-fitness-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "vteam-fitness",
+            storageBucket: "vteam-fitness.firebasestorage.app",
+            messagingSenderId: "1019346733178",
+            appId: "1:1019346733178:web:59d3a64d8dd838aa5c13c3"
+        };
+
+        const app = initializeApp(window.firebaseConfig);
+        window.auth = getAuth(app);
+        window.database = getDatabase(app);
+    </script>
+
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/members.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

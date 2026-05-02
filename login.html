@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - V Team Fitness Hub</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <style>
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-bg-secondary) 100%);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: var(--spacing-lg);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .login-logo {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text);
+        }
+
+        .login-header p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        .login-form {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-group input {
+            width: 100%;
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-input-wrapper input {
+            width: 100%;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+        }
+
+        .toggle-password:hover {
+            color: var(--text);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .login-form .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: var(--spacing-lg);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .login-footer a {
+            color: var(--primary-color);
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin: var(--spacing-lg) 0;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        @media (max-width: 576px) {
+            .login-container {
+                padding: var(--spacing-md);
+            }
+
+            .login-header {
+                margin-bottom: var(--spacing-lg);
+            }
+
+            .login-header h1 {
+                font-size: 24px;
+            }
+
+            .login-form {
+                padding: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="login-logo">VT</div>
+                <h1>V Team Fitness</h1>
+                <p>Admin Panel Login</p>
+            </div>
+
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="loginEmail" 
+                        placeholder="vteam@vteamfitness.com" 
+                        required 
+                        autocomplete="email"
+                    >
+                    <span class="error-message" id="loginEmailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <div class="password-input-wrapper">
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            placeholder="Enter your password" 
+                            required 
+                            autocomplete="current-password"
+                        >
+                        <button type="button" class="toggle-password" id="togglePassword">👁️</button>
+                    </div>
+                    <span class="error-message" id="loginPasswordError"></span>
+                </div>
+
+                <button type="submit" class="btn-primary login-btn" id="loginSubmitBtn">Login</button>
+            </form>
+
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p>Logging in...</p>
+            </div>
+
+            <div class="login-footer">
+                <a href="index.html">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+        import { getDatabase } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
+
+        window.firebaseConfig = {
+            apiKey: "AIzaSyBD--itijs4RziHUWMdQA3jAvZ9hgNhzBo",
+            authDomain: "vteam-fitness.firebaseapp.com",
+            databaseURL: "https://vteam-fitness-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "vteam-fitness",
+            storageBucket: "vteam-fitness.firebasestorage.app",
+            messagingSenderId: "1019346733178",
+            appId: "1:1019346733178:web:59d3a64d8dd838aa5c13c3"
+        };
+
+        const app = initializeApp(window.firebaseConfig);
+        window.auth = getAuth(app);
+        window.database = getDatabase(app);
+    </script>
+
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Redirect if already logged in
+            await redirectIfAuthenticated();
+
+            const form = document.getElementById('loginForm');
+            const emailInput = document.getElementById('loginEmail');
+            const passwordInput = document.getElementById('loginPassword');
+            const submitBtn = document.getElementById('loginSubmitBtn');
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            // Toggle password visibility
+            togglePasswordBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+                togglePasswordBtn.textContent = type === 'password' ? '👁️' : '🙈';
+            });
+
+            // Handle form submission
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                // Clear errors
+                document.getElementById('loginEmailError').textContent = '';
+                document.getElementById('loginPasswordError').textContent = '';
+
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+
+                // Validate
+                if (!email) {
+                    document.getElementById('loginEmailError').textContent = 'Email is required';
+                    return;
+                }
+
+                if (!password) {
+                    document.getElementById('loginPasswordError').textContent = 'Password is required';
+                    return;
+                }
+
+                // Show loading
+                submitBtn.disabled = true;
+                loadingSpinner.classList.add('active');
+
+                try {
+                    await loginUser(email, password);
+                    
+                    // Wait a bit for toast to show, then redirect
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                } catch (error) {
+                    loadingSpinner.classList.remove('active');
+                    submitBtn.disabled = false;
+
+                    // Show error
+                    if (error.message.includes('Email')) {
+                        document.getElementById('loginEmailError').textContent = error.message;
+                    } else if (error.message.includes('password')) {
+                        document.getElementById('loginPasswordError').textContent = error.message;
+                    } else {
+                        document.getElementById('loginPasswordError').textContent = error.message;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
